@@ -1,0 +1,16 @@
+Presenter起到的其实就是一个粘合剂的角色。
+它调度了UI逻辑和数据逻辑，然而UI逻辑和数据逻辑的具体实现，Presenter是不用关心的，只需要处理好如何调度，和状态处理即可。
+理解这个之前，你需要理解Model 和 ViewModel，一个Model也就是我们平常说的JavaBean，例如一个User类，它有自己的基本属性。
+姓名，年龄，用户名，密码等等。
+而ViewModel代表的是视图的Model，例如一个登陆视图，它的ViewModel包含用户名，密码。
+所以Model是不能直接被视图使用的，我们需要转换成ViewModel的形式，然后绑定到视图上。
+你可能会说，我也可以直接绑定Model的属性到View上，但是这样View和Model就不是相互独立的了，也就违背了我们使用MVP、MVVM的初衷。
+Interactor的作用实际上就是获取Model(从本地数据库，或者是服务器),转换成ViewModel，回调通知把ViewModel传递给Presenter。
+Presenter实现了Interactor的回调接口，可以接收到ViewModel的实例，此时它在回调函数里面只需要将接收到的ViewModel绑定的View上面即可。
+可以看到，在这个过程中Presenter并没有触及到具体的实现，只是把View 和 ViewModel进行了绑定而已。
+当然你也可以把数据逻辑写在Presenter，但是Interactor就不存在了，其实Interactor也是可以重用的.
+
+在这个例子中：
+MainView 就是我们希望界面中出现的 UI效果，如展现进度条，显示点击信息，设置ListView的显示的内容，也就是这里面的ViewModel
+FindItemInteractor 在这里就是获取List<String>item，通过回调将数据传给Persenter
+MainPresenter实现了FindItemIteractorImpl的回调接口将获取的List<String>item和MainView进行绑定
